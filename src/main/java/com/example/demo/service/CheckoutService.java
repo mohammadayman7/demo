@@ -23,11 +23,11 @@ public class CheckoutService {
 
         // generate tracking number
         String orderTrackingNumber = generateOrderTrackingNumber();
-        order.setOrdersNumber(orderTrackingNumber);
+       // order.setOrdersNumber(orderTrackingNumber);
 
         // populate order with orderItems
         Set<Item> orderItems = purchase.getItem();
-        orderItems.forEach(item -> order.add(item));
+        //orderItems.forEach(item -> order.add(item));
 
         // populate order with billingAddress and shippingAddress
         order.setAdditionalAddress(purchase.getAdditionalAddress());
@@ -46,7 +46,7 @@ public class CheckoutService {
             customer = customerFromDB;
         }
 
-        customer.add(order);
+       // customer.add(order);
 
         // save to the database
         customerRepository.save(customer);

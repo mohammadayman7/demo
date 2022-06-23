@@ -12,7 +12,7 @@ public class shoppingcart {
     @GeneratedValue(
             strategy = GenerationType.IDENTITY
     )
-    private int cartID;
+    private int cartid;
     private int numOfItems;
     private double totalPrice;
     private int itemId;
@@ -24,9 +24,9 @@ public class shoppingcart {
     @ManyToOne
     @JoinColumn(name = "customerid")
     private Customer customer;
-//    @OneToOne()
-//    @JoinColumn(name = "odersID")
-//    private Order Order;
+    @ManyToOne
+    @JoinColumn(name = "odersid")
+    private Order Order;
 
 
 }

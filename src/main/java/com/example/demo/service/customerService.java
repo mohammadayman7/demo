@@ -1,11 +1,14 @@
 package com.example.demo.service;
 
 import com.example.demo.DTO.CustomerDTO;
+import com.example.demo.DTO.checkout;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.module.Customer;
 import com.example.demo.module.Item;
+import com.example.demo.module.Order;
 import com.example.demo.module.shoppingcart;
 import com.example.demo.repository.CartRepository;
+import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.customerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,8 @@ public class customerService implements UserDetailsService {
     CartRepository cartRepository;
     @Autowired
     customerRepository customerRepository;
+    @Autowired
+    OrderRepository orderRepository;
 
     public List<CustomerDTO> getAllCustomers() {
         List<Customer> Customers = customerRepository.findAll();
@@ -106,13 +111,13 @@ public class customerService implements UserDetailsService {
     }
 
     public shoppingcart addToCart(Item item, Long id) {
-        shoppingcart shoppingcart= new shoppingcart();
+        shoppingcart shoppingcart = new shoppingcart();
 
         shoppingcart.setItemId(item.getItemID());
         shoppingcart.setItemName(item.getItemName());
         shoppingcart.setPrice(item.getPrice());
 
-        Customer customer= new Customer();
+        Customer customer = new Customer();
         customer.setCustomerid(id);
 
         shoppingcart.setCustomer(customer);
@@ -124,6 +129,16 @@ public class customerService implements UserDetailsService {
 
     public List<shoppingcart> getItemFromCart(Long id) {
         return cartRepository.findByCustomer_Customerid(id);
+    }
+
+    public void checkout(checkout checkout, Long id) {
+        List<shoppingcart> checkout1 = checkout.getCheckout();
+        Order order = orderRepository.save(checkout.getOrder());
+        for (shoppingcart shoppingcart : checkout1) {
+            shoppingcart.setOrder(order);
+        }
+        cartRepository.saveAll(checkout1);
+
     }
 
 

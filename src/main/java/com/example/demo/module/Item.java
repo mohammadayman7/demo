@@ -33,9 +33,9 @@ public class Item {
     @JoinColumn(name = "auctionID")
     private auction auction;
 
-    @ManyToOne
-    @JoinColumn(name = "odersID")
-    private Order order;
+//    @ManyToOne
+//    @JoinColumn(name = "odersID")
+//    private Order order;
 
 
 

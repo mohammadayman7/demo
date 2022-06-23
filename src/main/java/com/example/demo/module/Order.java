@@ -1,42 +1,29 @@
 package com.example.demo.module;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
+@Getter
+@Setter
+@EqualsAndHashCode
+@NoArgsConstructor
 @Entity
-@Data
 @Table(name = "orders")
 public class Order {
     @Id
-    private int odersID;
-    private String ordersNumber;
-    private Date ordersDate;
+    @GeneratedValue(
+            strategy = GenerationType.IDENTITY
+    )
+    private int odersid;
     private String additionalAddress;
     private Date shippedDate;
-    @OneToOne
-    @JoinColumn(name = "cartID")
-    private shoppingcart shoppingcart;
+    @OneToMany
+    private List<shoppingcart> shoppingcart;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
-    private Set<Item> orderItems = new HashSet<>();
 
-    public void add(Item item) {
 
-        if (item != null) {
-            if (shoppingcart == null) {
-                orderItems = new HashSet<>();
-            }
-
-            orderItems.add(item);
-            item.setOrder(this);
-        }
-    }
 }

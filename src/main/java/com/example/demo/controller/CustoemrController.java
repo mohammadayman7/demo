@@ -3,6 +3,7 @@ package com.example.demo.controller;
 
 import com.example.demo.DTO.CustomerDTO;
 import com.example.demo.DTO.RegistrationRequest;
+import com.example.demo.DTO.checkout;
 import com.example.demo.module.Customer;
 import com.example.demo.module.Item;
 import com.example.demo.module.Role;
@@ -134,5 +135,10 @@ public class CustoemrController {
     public List<shoppingcart> AddToCart(@PathVariable Long id ) {
 
         return customerService.getItemFromCart(id);
+    }
+    @PostMapping("/{id}/checkout")
+    public void checkout(@PathVariable Long id , @RequestBody checkout checkout) {
+
+         customerService.checkout(checkout,id);
     }
 }
