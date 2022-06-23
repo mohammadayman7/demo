@@ -40,7 +40,7 @@ public class seller implements UserDetails {
 
     @OneToMany(mappedBy = "seller")
 
-    private List<item> items;
+    private List<Item> Items;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Role roles;

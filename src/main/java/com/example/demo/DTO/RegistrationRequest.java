@@ -9,7 +9,7 @@ import java.util.Date;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class registrationRequest {
+public class RegistrationRequest {
     private final String fname;
     private final String lname;
     private final Date dob;

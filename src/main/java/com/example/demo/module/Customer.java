@@ -8,9 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Getter
@@ -18,46 +16,62 @@ import java.util.List;
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity
-@Table(name="customer")
-public class customer implements UserDetails {
+@Table(name = "customer")
+public class Customer implements UserDetails {
 
 
-
-   @Id
-   @GeneratedValue(
-           strategy = GenerationType.IDENTITY
-   )
+    @Id
+    @GeneratedValue(
+            strategy = GenerationType.IDENTITY
+    )
     private Long customerid;
 
     private String fname;
 
-    private  String lname;
+    private String lname;
 
     private Date dob;
 
-    private  int phonenumber;
+    private int phonenumber;
 
-    private  String email;
+    private String email;
 
     private String password;
 
     private String address;
 
- @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer")
+    private List<savedList> savedLists;
 
- private List<savedList> savedLists;
- @OneToMany(mappedBy = "customer")
+    @OneToMany
+    private List<shoppingcart> shoppingcarts;
 
- private List<shoppingcart>shoppingcarts;
- @OneToMany(mappedBy = "offerID")
+    @OneToMany(mappedBy = "offerID")
 
- private List<offer> offers;
+    private List<offer> offers;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Role roles;
 
-    public customer(String fName, String lName, Date dob, int phoneNumber,
-                    String email, String password, String address ) {
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private Set<Order> orders = new HashSet<>();
+
+
+    public void add(Order order) {
+
+        if (order != null) {
+
+            if (orders == null) {
+                orders = new HashSet<>();
+            }
+
+            orders.add(order);
+            order.setCustomer(this);
+        }
+    }
+
+    public Customer(String fName, String lName, Date dob, int phoneNumber,
+                    String email, String password, String address) {
 
         this.fname = fName;
         this.lname = lName;
@@ -69,7 +83,6 @@ public class customer implements UserDetails {
 
 
     }
-
 
 
     @Override
@@ -86,10 +99,12 @@ public class customer implements UserDetails {
     public String getUsername() {
         return email;
     }
-    public String getfName(){
+
+    public String getfName() {
         return fname;
     }
-    public String getlName(){
+
+    public String getlName() {
         return lname;
     }
 

@@ -12,6 +12,6 @@ public class category {
     private int rootID;
     @OneToMany(mappedBy = "category")
 
-    private List<item>items;
+    private List<Item> Items;
 
 }

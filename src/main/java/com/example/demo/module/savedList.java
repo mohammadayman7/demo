@@ -9,9 +9,9 @@ public class savedList {
     private int listID;
     @ManyToOne
     @JoinColumn(name = "customerID")
-    private com.example.demo.module.customer customer;
+    private Customer customer;
     @ManyToOne
     @JoinColumn(name = "itemID")
-    private com.example.demo.module.item item;
+    private Item item;
 
 }

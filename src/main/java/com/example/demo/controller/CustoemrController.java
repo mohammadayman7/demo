@@ -2,9 +2,11 @@ package com.example.demo.controller;
 
 
 import com.example.demo.DTO.CustomerDTO;
-import com.example.demo.DTO.registrationRequest;
+import com.example.demo.DTO.RegistrationRequest;
+import com.example.demo.module.Customer;
+import com.example.demo.module.Item;
 import com.example.demo.module.Role;
-import com.example.demo.module.customer;
+import com.example.demo.module.shoppingcart;
 import com.example.demo.payload.JWTAuthResponse;
 import com.example.demo.payload.LoginDto;
 import com.example.demo.repository.customerRepository;
@@ -45,7 +47,7 @@ public class CustoemrController {
 
     @Autowired
     sellerRepository sellerRepository;
-
+    @Autowired
     customerService customerService;
 
     // "REST API to Register or Signup user to Blog app"
@@ -63,7 +65,7 @@ public class CustoemrController {
 
    // "REST API to Signin or Login user to Blog app"
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody registrationRequest registrationRequest){
+    public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest registrationRequest){
 //        boolean isValidEmail =
 //                emailValidator.test(registrationRequest.getEmail());
 //        if (!isValidEmail){
@@ -76,7 +78,7 @@ public class CustoemrController {
         }
 
         // create user object
-        customer  customer = new customer();
+        Customer customer = new Customer();
         customer.setFname((registrationRequest.getFname()));
         customer.setLname(registrationRequest.getLname());
         customer.setEmail(registrationRequest.getEmail());
@@ -92,7 +94,7 @@ public class CustoemrController {
     }
 
 
-    @GetMapping
+    @GetMapping("/getAll")
     public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
         return ResponseEntity.ok(customerService.getAllCustomers());
     }
@@ -123,4 +125,14 @@ public class CustoemrController {
 //        return new ResponseEntity(customerService.createCustomer(customerDto), HttpStatus.CREATED);
 //    }
 
+    @PostMapping("/{id}/cart")
+    public shoppingcart AddToCart(@PathVariable Long id , @RequestBody Item item) {
+
+        return customerService.addToCart(item,id);
+    }
+    @GetMapping("/{id}/cart")
+    public List<shoppingcart> AddToCart(@PathVariable Long id ) {
+
+        return customerService.getItemFromCart(id);
+    }
 }

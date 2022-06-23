@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.DTO.SellerDTO;
-import com.example.demo.DTO.registrationRequest;
+import com.example.demo.DTO.RegistrationRequest;
 import com.example.demo.module.Role;
 import com.example.demo.module.seller;
 import com.example.demo.payload.JWTAuthResponse;
@@ -60,7 +60,7 @@ public class sellerController {
 
     // "REST API to Signin or Login user to Blog app"
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody registrationRequest registrationRequest){
+    public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest registrationRequest){
 //        boolean isValidEmail =
 //                emailValidator.test(registrationRequest.getEmail());
 //        if (!isValidEmail){

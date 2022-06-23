@@ -16,7 +16,7 @@ public class auction {
     private double endPrice;
     @OneToOne()
     @JoinColumn(name = "itemID")
-    private com.example.demo.module.item item;
+    private Item item;
     @OneToMany(mappedBy = "offerID")
 
     private List<offer> offers;

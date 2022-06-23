@@ -16,5 +16,5 @@ public class offer {
     private com.example.demo.module.auction auction;
     @ManyToOne
     @JoinColumn(name = "customerID")
-    private com.example.demo.module.customer customer;
+    private Customer customer;
 }

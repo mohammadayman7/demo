@@ -2,7 +2,10 @@ package com.example.demo.service;
 
 import com.example.demo.DTO.CustomerDTO;
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.module.customer;
+import com.example.demo.module.Customer;
+import com.example.demo.module.Item;
+import com.example.demo.module.shoppingcart;
+import com.example.demo.repository.CartRepository;
 import com.example.demo.repository.customerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,19 +21,21 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 
-public class customerService implements UserDetailsService{
-
+public class customerService implements UserDetailsService {
+    @Autowired
+    CartRepository cartRepository;
     @Autowired
     customerRepository customerRepository;
-    public List<CustomerDTO> getAllCustomers() {
-        List<customer> customers = customerRepository.findAll();
 
-        return customers.stream().map(customer -> mapToDTO(customer)).collect(Collectors.toList());
+    public List<CustomerDTO> getAllCustomers() {
+        List<Customer> Customers = customerRepository.findAll();
+
+        return Customers.stream().map(customer -> mapToDTO(customer)).collect(Collectors.toList());
     }
 
 
     public CustomerDTO getCustomerById(long id) {
-        customer customer = customerRepository.findById(id).
+        Customer customer = customerRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Customer", "id", id));
         return mapToDTO(customer);
     }
@@ -38,7 +43,7 @@ public class customerService implements UserDetailsService{
 
     public CustomerDTO updatCustomer(CustomerDTO customerDto, long id) {
         // get Customer by id from the database
-        customer customer = customerRepository.findById(id).
+        Customer customer = customerRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Customer", "id", id));
 
         customer.setFname(customerDto.getFname());
@@ -48,7 +53,7 @@ public class customerService implements UserDetailsService{
         customer.setEmail(customerDto.getEmail());
         customer.setPhonenumber(customerDto.getPhonenumber());
 
-        customer updateCustomer = customerRepository.save(customer);
+        Customer updateCustomer = customerRepository.save(customer);
 
         return mapToDTO(updateCustomer);
     }
@@ -56,12 +61,13 @@ public class customerService implements UserDetailsService{
 
     public void deleteCustomerById(long id) {
         // get Custome      r by id from the database
-        customer customer = customerRepository.findById(id).
+        Customer customer = customerRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Customer", "id", id));
         customerRepository.delete(customer);
     }
+
     // convert Entity into DTO
-    private CustomerDTO mapToDTO(customer customer) {
+    private CustomerDTO mapToDTO(Customer customer) {
         CustomerDTO customerDto = new CustomerDTO();
         customerDto.setCustomerid(customer.getCustomerid());
         customerDto.setFname(customer.getfName());
@@ -75,8 +81,8 @@ public class customerService implements UserDetailsService{
     }
 
     // convert DTO to entity
-    private customer mapToEntity(CustomerDTO customerDto) {
-        customer customer = new customer();
+    private Customer mapToEntity(CustomerDTO customerDto) {
+        Customer customer = new Customer();
         customer.setCustomerid(customerDto.getCustomerid());
         customer.setFname(customerDto.getFname());
         customer.setAddress(customerDto.getAddress());
@@ -89,47 +95,61 @@ public class customerService implements UserDetailsService{
     }
 
 
-
-
-
-
-
-
-
-
-
-
     private final customerRepository repository;
     BCryptPasswordEncoder bCryptPasswordEncoder;
     private final static String USER_NOT_FOUND_MSG
             = "user with email %s not found";
 
-
-
-
     @Override
-    public UserDetails loadUserByUsername(String email)
-            throws UsernameNotFoundException {
-        return repository.findByEmail(email)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException(
-                                String.format(USER_NOT_FOUND_MSG , email)
-                        ));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return repository.findByEmail(email);
     }
-    public String signUpCustomer(customer customer){
-        boolean customerExist =repository.
-                findByEmail(customer.getEmail())
-                    .isPresent();
-        if (customerExist){
-            return "email alredy taken";
-        }
-       String cEncodePassword = bCryptPasswordEncoder
-               .encode(customer.getPassword());
-        customer.setPassword(cEncodePassword);
-        repository.save(customer);
-        //TODO send confirmation token
-        return "it works";
+
+    public shoppingcart addToCart(Item item, Long id) {
+        shoppingcart shoppingcart= new shoppingcart();
+
+        shoppingcart.setItemId(item.getItemID());
+        shoppingcart.setItemName(item.getItemName());
+        shoppingcart.setPrice(item.getPrice());
+
+        Customer customer= new Customer();
+        customer.setCustomerid(id);
+
+        shoppingcart.setCustomer(customer);
+
+
+        return cartRepository.save(shoppingcart);
+
     }
+
+    public List<shoppingcart> getItemFromCart(Long id) {
+        return cartRepository.findByCustomer_Customerid(id);
+    }
+
+
+//    @Override
+//    public UserDetails loadUserByUsername(String email)
+//            throws UsernameNotFoundException {
+//        return repository.findByEmail(email)
+//                .orElseThrow(() ->
+//                        new UsernameNotFoundException(
+//                                String.format(USER_NOT_FOUND_MSG , email)
+//                        ));
+//    }
+//    public String signUpCustomer(Customer customer){
+//        boolean customerExist =repository.
+//                findByEmail(customer.getEmail())
+//                    .isPresent();
+//        if (customerExist){
+//            return "email alredy taken";
+//        }
+//       String cEncodePassword = bCryptPasswordEncoder
+//               .encode(customer.getPassword());
+//        customer.setPassword(cEncodePassword);
+//        repository.save(customer);
+//        //TODO send confirmation token
+//        return "it works";
+//    }
 
 //    public status login(customer customer) {
 //        List<customer> customers = repository.findAll();
